@@ -26,6 +26,7 @@ const defaultDuration = Duration(milliseconds: 250);
 final RegExp emailValidatorRegExp =
     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 final RegExp wordValidatorRegExp = RegExp(r"[a-zA-Z]+");
+final RegExp numtelValidatorRegExp = RegExp(r"^[0-9]");
 const String kEmailNullError = "Veuillez entrer votre email";
 const String kInvalidEmailError = "Veuillez entrer une adresse email valide";
 const String kPassNullError = "Veuillez entrer votre mot de passe";

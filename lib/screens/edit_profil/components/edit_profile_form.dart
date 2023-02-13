@@ -1,13 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/components/custom_surfix_icon.dart';
 import 'package:shop_app/components/default_button.dart';
 import 'package:shop_app/components/form_error.dart';
 import 'package:shop_app/firestoreService/userService.dart';
 import 'package:shop_app/helper/response.dart';
+import 'package:passwordfield/passwordfield.dart';
 import 'package:shop_app/models/User.dart';
+import 'package:select_form_field/select_form_field.dart';
 
 import '../../../constants.dart';
+import '../../../models/app_state_manager.dart';
 import '../../../size_config.dart';
 
 class EditProfileForm extends StatefulWidget {
@@ -23,11 +27,19 @@ class _EditProfileFormState extends State<EditProfileForm> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController addressFacController = TextEditingController();
+  TextEditingController addressLivController = TextEditingController();
+  TextEditingController newpwdController = TextEditingController();
+  TextEditingController genreController = TextEditingController();
+
   String firstName;
   String lastName;
   String phoneNumber;
   String address;
+  String addressLiv;
+  String addressFac;
   String userId;
+  String genre;
   // Profil profil;
   bool isLoading = false;
 
@@ -51,12 +63,15 @@ class _EditProfileFormState extends State<EditProfileForm> {
     });
   }
 
+  
+
   @override
   void initState() {
     super.initState();
     final user = auth.currentUser;
     setState(() {
       userId = user.uid;
+      
     });
     loadProfil(userId);
   }
@@ -65,19 +80,24 @@ class _EditProfileFormState extends State<EditProfileForm> {
   void dispose() {
     firstNameController.dispose();
     addressController.dispose();
+    addressFacController.dispose();
+    addressLivController.dispose();
     lastNameController.dispose();
     phoneNumberController.dispose();
+    genreController.dispose();
     super.dispose();
   }
 
-  Future<void> loadProfil(userId) async {
-    Profil resp =  getUser(userId) as Profil;
+   loadProfil(userId) async {
+    final resp = await getUser(userId) ;
     setState(() {
-      firstName = resp.firstName;
-      lastName = resp.lastName;
-      phoneNumber = resp.phoneNumber;
-      address = resp.address;
+      lastNameController.text = resp.lastName;
+      phoneNumberController.text = resp.phoneNumber;
+      addressController.text = resp.address;
+      addressFacController.text = resp.addressFac;
+      addressLivController.text = resp.addressLiv;
       firstNameController.text = resp.firstName;
+      genreController.text = resp.genre;
     });
   }
 
@@ -105,7 +125,12 @@ class _EditProfileFormState extends State<EditProfileForm> {
                     margin: EdgeInsets.only(top: 30),
                     child: DefaultButton(
                       text: "Ok",
-                      press: () => Navigator.pop(context, true),
+                      press: () 
+                      {
+                        Provider.of<AppStateManager>(context, listen: false)
+                        .loginSucess();
+                      },
+                      //=> Navigator.pop(context, true),
                     ),
                   )
                 ]),
@@ -118,6 +143,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
   @override
   Widget build(BuildContext context) {
+    final user = auth.currentUser;
     return Form(
       key: _formKey,
       child: Column(
@@ -126,9 +152,18 @@ class _EditProfileFormState extends State<EditProfileForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
           buildLastNameFormField(lastName),
           SizedBox(height: getProportionateScreenHeight(30)),
+          buildpwdFormField(),
+          SizedBox(height: getProportionateScreenHeight(30)),
           buildPhoneNumberFormField(phoneNumber),
           SizedBox(height: getProportionateScreenHeight(30)),
           buildAddressFormField(address),
+          SizedBox(height: getProportionateScreenHeight(30)),
+          buildAddressfacturationFormField(addressFac),
+          SizedBox(height: getProportionateScreenHeight(30)),
+          buildAddressLivraisonFormField(addressLiv),
+          SizedBox(height: getProportionateScreenHeight(30)),
+          buildgenderFormField(),
+         
           FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(40)),
           DefaultButton(
@@ -136,15 +171,28 @@ class _EditProfileFormState extends State<EditProfileForm> {
             isLoading: isLoading,
             press: () async {
               setLoading();
+              
+              if(newpwdController.text.isNotEmpty){user.updatePassword(newpwdController.text);}
               if (_formKey.currentState.validate()) {
                 Response resp = await updateProfil(userId, {
+                  // 'id': userId,
+                  // 'first_name': firstName,
+                  // 'last_name': lastName,
+                  // 'phoneNumber': phoneNumber,
+                  // 'address': address,
+                  // 'addressFac': addressFac,
+                  // 'addressLiv': addressLiv,
                   'id': userId,
-                  'first_name': firstName,
-                  'last_name': lastName,
-                  'phoneNumber': phoneNumber,
-                  'address': address
+                  'first_name': firstNameController.text,
+                  'last_name': lastNameController.text,
+                  'phoneNumber': phoneNumberController.text,
+                  'address': addressController.text,
+                  'addressFac': addressFacController.text,
+                  'addressLiv': addressLivController.text,
+                  'genre': genreController.text
                 });
                 if (resp?.status == 200) {
+                  
                   openDialog();
                   setLoading();
                 }
@@ -159,8 +207,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
   TextFormField buildAddressFormField(addressValue) {
     return TextFormField(
-      initialValue: addressValue,
-      onSaved: (newValue) => address = newValue,
+      controller: addressController,
+      //initialValue: addressValue,
+      onSaved: (newValue) => addressController.text = newValue,
       onChanged: (value) => setState(() {
         address = value;
       }),
@@ -172,11 +221,74 @@ class _EditProfileFormState extends State<EditProfileForm> {
           addError(error: "Certaines valeurs ne sont pas valides");
           return "";
         }
+        addressController.text = value;
         return null;
       },
       decoration: InputDecoration(
         labelText: "Adresse",
-        hintText: addressValue != null ? addressValue : "Entrer l'adresse",
+        hintText: addressValue != null ? addressValue : "Entrez l'adresse",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon:
+            CustomSurffixIcon(svgIcon: "assets/icons/Location point.svg"),
+      ),
+    );
+  }
+
+  TextFormField buildAddressfacturationFormField(addressValue) {
+    return TextFormField(
+      controller: addressFacController,
+      //initialValue: addressValue,
+      onSaved: (newValue) => addressFac = newValue,
+      onChanged: (value) => setState(() {
+        addressFac = value;
+      }),
+      validator: (value) {
+        if (value.isEmpty) {
+          addError(error: " le champ adresse est vide");
+          return "";
+        } else if (!wordValidatorRegExp.hasMatch(value)) {
+          addError(error: "Certaines valeurs ne sont pas valides");
+          return "";
+        }
+        addressFacController.text = value;
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Adresse de facturation",
+        hintText: addressValue != null ? addressValue : "Entrez l'adresse de facturation",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon:
+            CustomSurffixIcon(svgIcon: "assets/icons/Location point.svg"),
+      ),
+    );
+  }
+
+  TextFormField buildAddressLivraisonFormField(addressValue) {
+    return TextFormField(
+      controller: addressLivController,
+      //initialValue: addressValue,
+      onSaved: (newValue) => addressLiv = newValue,
+      onChanged: (value) => setState(() {
+        addressLiv = value;
+      }),
+      validator: (value) {
+        if (value.isEmpty) {
+          addError(error: " le champ adresse est vide");
+          return "";
+        } else if (!wordValidatorRegExp.hasMatch(value)) {
+          addError(error: "Certaines valeurs ne sont pas valides");
+          return "";
+        }
+        addressLivController.text = value;
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Adresse de livraison",
+        hintText: addressValue != null ? addressValue : "Entrez l'adresse de livraison",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -188,7 +300,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
   TextFormField buildPhoneNumberFormField(phone) {
     return TextFormField(
-      initialValue: phone,
+      controller: phoneNumberController,
+     // initialValue: phone,
       keyboardType: TextInputType.phone,
       onSaved: (newValue) => phoneNumber = newValue,
       onChanged: (value) => setState(() {
@@ -196,7 +309,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       }),
       decoration: InputDecoration(
         labelText: "Numéro",
-        hintText: phone != null ? phone : "Enter le numéro de téléphone",
+        hintText: phone != null ? phone : "Entrez le numéro de téléphone",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -204,12 +317,13 @@ class _EditProfileFormState extends State<EditProfileForm> {
       ),
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: "entré un numéro de téléphone");
+          addError(error: "Entrez un numéro de téléphone");
           return "";
-        } else if (!wordValidatorRegExp.hasMatch(value)) {
+        } else if (!numtelValidatorRegExp.hasMatch(value)) {
           addError(error: "Certaines valeurs ne sont pas valides");
           return "";
         }
+        phoneNumberController.text = value;
         return null;
       },
     );
@@ -217,10 +331,17 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
   TextFormField buildLastNameFormField(lastNameValue) {
     return TextFormField(
-      initialValue: lastNameValue,
-      onChanged: (value) => setState(() {
-        lastName = value;
-      }),
+      controller: lastNameController,
+     // initialValue: lastNameValue,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            lastName = value;
+          });
+          removeError(error: kNamelNullError);
+        }
+        return null;
+      },
       validator: (value) {
         if (value.isEmpty) {
           addError(error: "le champ prénom est vide");
@@ -229,13 +350,14 @@ class _EditProfileFormState extends State<EditProfileForm> {
           addError(error: "Certaines valeurs ne sont pas valides");
           return "";
         }
+        lastNameController.text = value;
         return null;
       },
       decoration: InputDecoration(
         labelText: "Prénom",
-        hintText: lastNameValue != null ? lastNameValue : "Entrer le prénom",
+        hintText: lastNameValue != null ? lastNameValue : "Entrez le prénom",
         // If  you are using latest version of flutter then lable text and hint text shown like this
-        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        // if you r using flutter less then 1.20.* then maybe this is not working properly 
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
       ),
@@ -245,10 +367,11 @@ class _EditProfileFormState extends State<EditProfileForm> {
   TextFormField buildfirstNameFormField(name) {
     return TextFormField(
       controller: firstNameController,
+     // initialValue: name,
       onChanged: (value) {
         if (value.isNotEmpty) {
           setState(() {
-            firstName = value;
+             firstName = value;
           });
           removeError(error: kNamelNullError);
         }
@@ -256,22 +379,129 @@ class _EditProfileFormState extends State<EditProfileForm> {
       },
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: kNamelNullError);
+          addError(error: "le champ nom est vide");
           return "";
         } else if (!wordValidatorRegExp.hasMatch(value)) {
           addError(error: "Certaines valeurs ne sont pas valides");
           return "";
         }
+        firstNameController.text = value;
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Noms",
-        hintText: name != null ? name : "Entrer le nom",
+        labelText: "Nom",
+        hintText: name != null ? name : "Entrez le nom",
         // If  you are using latest version of flutter then lable text and hint text shown like this
-        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        // if you r using flutter less then 1.20.* then maybe this is not working properly 
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
       ),
     );
   }
+
+  TextFormField buildpwdFormField() {
+    return TextFormField(
+      controller: newpwdController,
+      obscureText: !_obscureText,
+     // initialValue: name,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+             firstName = value;
+          });
+          removeError(error: kNamelNullError);
+        }
+        return null;
+      },
+      validator: (value) {
+        // if (value.isEmpty) {
+        //   addError(error: "le champ nom est vide");
+        //   return "";
+        // } else if (!wordValidatorRegExp.hasMatch(value)) {
+        //   addError(error: "Certaines valeurs ne sont pas valides");
+        //   return "";
+        // }
+        newpwdController.text = value;
+        return null;
+      },
+      decoration: 
+      
+      
+      InputDecoration(
+        
+        labelText: "Nouveau mot de passe",
+        hintText: "Entrez le nouveau mot de passe",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly 
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        
+        suffixIcon: new GestureDetector(
+          onTap: () {
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+          },
+          child:
+          new Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+        ),
+      ),
+    );
+  }
+
+// ignore: non_constant_identifier_names
+
+
+DropdownButtonFormField buildgenderFormField() {
+  final name = genreController.text ;
+    return DropdownButtonFormField(
+        
+     // initialValue: name,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+             genreController.text = value;
+          });
+          removeError(error: kNamelNullError);
+        }
+        return null;
+      },
+      validator: (value) {
+        // if (value.isEmpty) {
+        //   addError(error: "le champ nom est vide");
+        //   return "";
+        // } else if (!wordValidatorRegExp.hasMatch(value)) {
+        //   addError(error: "Certaines valeurs ne sont pas valides");
+        //   return "";
+        // }
+        //newpwdController.text = value;
+        return null;
+      },
+      
+      decoration:
+      InputDecoration(
+        
+        labelText: "Genre",
+        hintText: name != null ? name : "Choisissez votre genre",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly 
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        
+       //suffixIcon:  CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
+      ), items: <String>['Homme', 'Femme'].map<DropdownMenuItem<String>>((String value) {
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Text(
+        value,
+        style: TextStyle(fontSize: 20),
+      ),
+    );
+  }).toList(),
+    );
+  }
+
+
+
+bool _obscureText = false;
+
+
 }

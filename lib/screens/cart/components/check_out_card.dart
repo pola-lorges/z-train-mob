@@ -61,7 +61,9 @@ class _CheckoutCardState extends State<CheckoutCard> {
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 30),
-                    child: DefaultButton(text: "Ok", press: () => {}
+                    child: DefaultButton(text: "Ok", press: () => {
+                      
+                    }
                         // Navigator.pushNamed(context, HomeScreen.routeName),
                         ),
                   )

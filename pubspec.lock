@@ -392,6 +392,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  my_app:
+    dependency: "direct main"
+    description:
+      name: my_app
+      sha256: "0e736d837d4e3018955a819f2d032c96c8c0cc5405821edc79b8cd4996184f10"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   nested:
     dependency: transitive
     description:
@@ -400,6 +408,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  passwordfield:
+    dependency: "direct main"
+    description:
+      name: passwordfield
+      sha256: e32b201b6185a18b074995a175c5fa3471fa0bd0a24dc1b42daa938f26b064ae
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   path:
     dependency: transitive
     description:
@@ -512,6 +528,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  select_form_field:
+    dependency: "direct main"
+    description:
+      name: select_form_field
+      sha256: "11b2ab3842b9da2a49a7933239c3d428e0cd2d0aa6a70b7e70f370dbf263a751"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   sky_engine:
     dependency: transitive
     description: flutter

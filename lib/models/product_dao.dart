@@ -131,7 +131,7 @@ class ProductDAO extends AbsProductDAO {
   @override
   Future<void> deletedFromCard(String cartId) async {
     return await cartCollection
-        .doc(cartId)
+        .doc( )
         .delete()
         .then((value) => {print('successfully remove from cart')})
         .catchError((error) => {print(error)});
