@@ -7,6 +7,7 @@ class AppStateManager extends ChangeNotifier {
   bool _logInSucess = false;
   int _selectedTab = AppTab.home;
   bool _displayProduct = false;
+  bool _displayCommandes = false;
   bool _displayCart = false;
   bool _displayModifyProfil = false;
   bool _onCreatingAccount = false;
@@ -18,6 +19,7 @@ class AppStateManager extends ChangeNotifier {
   bool get displayProduct => _displayProduct;
   bool get displayCart => _displayCart;
   bool get displayModifyProfil => _displayModifyProfil;
+  bool get displayCommandes => _displayCommandes;
   bool get onCreatingAccout => _onCreatingAccount;
 
   void plashed() {
@@ -65,6 +67,11 @@ class AppStateManager extends ChangeNotifier {
 
   void setModifyPlofil(val) {
     _displayModifyProfil = val;
+    notifyListeners();
+  }
+
+  void setCommande(val) {
+    _displayCommandes = val;
     notifyListeners();
   }
 

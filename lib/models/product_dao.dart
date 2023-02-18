@@ -11,6 +11,8 @@ class ProductDAO extends AbsProductDAO {
       FirebaseFirestore.instance.collection('Carts');
   final CollectionReference favoritesCollection =
       FirebaseFirestore.instance.collection('Favorites');
+      final CollectionReference commandesCollection =
+      FirebaseFirestore.instance.collection('commandes');
   final FirebaseAuth auth = FirebaseAuth.instance;
   double amount = 0.0;
 
@@ -197,6 +199,15 @@ class ProductDAO extends AbsProductDAO {
 
     dynamic data =
         favoritesCollection.where('userId', isEqualTo: uid).snapshots();
+    return data;
+  }
+  
+  getCommandeProdStream() {
+    final User user = auth.currentUser;
+    final uid = user.uid;
+
+    dynamic data =
+        commandesCollection.where('userId', isEqualTo: uid).snapshots();
     return data;
   }
 }

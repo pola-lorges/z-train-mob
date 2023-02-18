@@ -21,11 +21,11 @@ class _BodyState extends State<Body> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: SizeConfig.screenHeight * 0.03),
-                Text("Vos Informations", style: headingStyle),
+                // SizedBox(height: SizeConfig.screenHeight * 0.03),
+                // Text("Vos Informations", style: headingStyle),
                 SizedBox(height: SizeConfig.screenHeight * 0.06),
                 EditProfileForm(),
-                // SizedBox(height: getProportionateScreenHeight(30)),
+                SizedBox(height: getProportionateScreenHeight(30)),
                 // Text(
                 //   "En continuant, vous confirmez que vous êtes d'accord \navec nos conditions générales.",
                 //   textAlign: TextAlign.center,

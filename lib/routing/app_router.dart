@@ -14,6 +14,9 @@ import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
 import 'package:shop_app/screens/sign_up/sign_up_screen.dart';
 import 'package:shop_app/screens/splash/splash_screen.dart';
 
+import '../screens/commandes/com.dart';
+import '../screens/commandes/commandes_screen.dart';
+
 class AppRouter extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   @override
@@ -33,6 +36,8 @@ class AppRouter extends RouterDelegate
       notifyListeners();
     });
   }
+  
+  
 
   @override
   void dispose() {
@@ -63,6 +68,10 @@ class AppRouter extends RouterDelegate
 
     if (route.settings.name == AppPage.editProfileScreen) {
       appStateManager.setModifyPlofil(false);
+    }
+
+    if (route.settings.name == AppPage.commandesScreen) {
+      appStateManager.setCommande(false);
     }
 
     if (route.settings.name == AppPage.signUpScreen) {
@@ -96,8 +105,10 @@ class AppRouter extends RouterDelegate
               appProductManager.selectedProductQuantity),
         if (appStateManager.displayCart) CartScreen.page(),
         if (appStateManager.displayModifyProfil) EditProfileScreen.page(),
+        if (appStateManager.displayCommandes) Commandes.page(),
+
       ],
-      onPopPage: _handlePopPage,
+      onPopPage: _handlePopPage, 
     );
   }
 

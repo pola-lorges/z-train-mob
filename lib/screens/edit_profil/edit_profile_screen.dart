@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/app_page.dart';
 
+import '../../constants.dart';
 import 'components/body.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('S\'inscrire'),
+        title: Text("Mes informations", style: headingStyle),
       ),
       body: Body(),
     );

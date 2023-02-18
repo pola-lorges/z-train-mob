@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
-class IconBtnWithCounter extends StatelessWidget {
-  const IconBtnWithCounter({
+class IconBtnWithCounterActive extends StatelessWidget {
+  const IconBtnWithCounterActive({
     Key key,
     @required this.svgSrc,
     this.numOfitem = 0,
@@ -35,7 +35,7 @@ class IconBtnWithCounter extends StatelessWidget {
             ),
             child: SvgPicture.asset(svgSrc),
           ),
-          if (numOfitem != 0)
+          //if (numOfitem != 0)
             Positioned(
               top: -3,
               right: 0,
@@ -43,20 +43,20 @@ class IconBtnWithCounter extends StatelessWidget {
                 height: getProportionateScreenWidth(16),
                 width: getProportionateScreenWidth(16),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFF4848),
+                  color: Color.fromARGB(255, 29, 212, 26),
                   shape: BoxShape.circle,
                   border: Border.all(width: 1.5, color: Colors.white),
                 ),
                 child: Center(
-                  child: Text(
-                    "$numOfitem",
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(10),
-                      height: 1,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
+                  // child: Text(
+                  //   "$numOfitem",
+                  //   style: TextStyle(
+                  //     fontSize: getProportionateScreenWidth(10),
+                  //     height: 1,
+                  //     fontWeight: FontWeight.w600,
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
                 ),
               ),
             )

@@ -12,4 +12,5 @@ class AppPage {
   static String profileScreen = '/profile';
   static String editProfileScreen = '/edite_profile';
   static String favoariteProductScreen = '/favorite';
+  static String commandesScreen = '/commandes';
 }

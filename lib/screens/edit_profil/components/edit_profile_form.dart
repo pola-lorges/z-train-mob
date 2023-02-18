@@ -481,7 +481,8 @@ DropdownButtonFormField buildgenderFormField() {
       InputDecoration(
         
         labelText: "Genre",
-        hintText: name != null ? name : "Choisissez votre genre",
+        hintText: name != null ? name : "Choisissez votre genre" ,
+        
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly 
         floatingLabelBehavior: FloatingLabelBehavior.always,

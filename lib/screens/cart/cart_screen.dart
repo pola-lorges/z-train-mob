@@ -21,23 +21,26 @@ class CartScreen extends StatelessWidget {
     return StreamBuilder<QuerySnapshot>(
         stream: _cartStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          return Scaffold(
-              appBar: buildAppBar(context),
-              body: Body(),
-              bottomNavigationBar: CheckoutCard(),
-              floatingActionButton:
-                  snapshot.data != null && snapshot.data.docs.isNotEmpty
-                      ? FloatingActionButton.extended(
-                          onPressed: () {
-                            snapshot.data.docs.forEach((doc) {
-                              ProductDAO().deletedFromCard(doc.id);
-                            });
-                          },
-                          label: Text('vider le panier'),
-                          icon: Icon(Icons.delete),
-                          backgroundColor: kPrimaryColor,
-                        )
-                      : null);
+          return Expanded(
+            child: Scaffold(
+              
+                appBar: buildAppBar(context),
+                body: Body(),
+                bottomNavigationBar: CheckoutCard(),
+                floatingActionButton:
+                    snapshot.data != null && snapshot.data.docs.isNotEmpty
+                        ? FloatingActionButton.extended(
+                            onPressed: () {
+                              snapshot.data.docs.forEach((doc) {
+                                ProductDAO().deletedFromCard(doc.id);
+                              });
+                            },
+                            label: Text('vider le panier'),
+                            icon: Icon(Icons.delete),
+                            backgroundColor: kPrimaryColor,
+                          )
+                        : null),
+          );
         });
   }
 
