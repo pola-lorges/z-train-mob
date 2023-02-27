@@ -132,8 +132,8 @@ class ProductDAO extends AbsProductDAO {
 
   @override
   Future<void> deletedFromCard(String cartId) async {
-    return await cartCollection
-        .doc( )
+     await cartCollection
+        .doc(cartId)
         .delete()
         .then((value) => {print('successfully remove from cart')})
         .catchError((error) => {print(error)});
@@ -209,5 +209,28 @@ class ProductDAO extends AbsProductDAO {
     dynamic data =
         commandesCollection.where('userId', isEqualTo: uid).snapshots();
     return data;
+  }
+
+   Future<void> addToCommande() async {
+    final User user = auth.currentUser;
+    final uid = user.uid;
+   
+    await cartCollection
+        .where('userId', isEqualTo: uid)
+        .get()
+        .then((value) {
+          print(value.docs.length);
+         
+        // print("data ${cartCollection.where('userId', isEqualTo: uid).snapshots()}");
+           commandesCollection.add({
+            'userId': uid,
+            'products':  value.docs.map((e) => e.data()).toList(),
+            'date': DateTime.now()
+
+          })
+          .then((value) => {print('Cart Added')})
+          .catchError((error) => {print('Failed to add cartd')});
+        });
+    
   }
 }

@@ -106,7 +106,8 @@ class AppRouter extends RouterDelegate
         if (appStateManager.displayCart) CartScreen.page(),
         if (appStateManager.displayModifyProfil) EditProfileScreen.page(),
         if (appStateManager.displayCommandes) Commandes.page(),
-
+        // if (appStateManager.displayModifyProfil &&
+        //   appStateManager.selectTab == AppTab.home) HomeScreen.page(),
       ],
       onPopPage: _handlePopPage, 
     );

@@ -4,6 +4,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:shop_app/models/app_page.dart';
+import 'package:shop_app/screens/commandes/Body.dart';
 
 import '../../components/coustom_bottom_nav_bar.dart';
 import '../../constants.dart';
@@ -43,19 +44,21 @@ class _CommandesState extends State<Commandes> {
               appBar:  AppBar(
               title: Text("Mes Commandes", style: headingStyle), 
               ),
-              floatingActionButton:
-                  snapshot.data != null && snapshot.data.docs.isNotEmpty
-                      ? FloatingActionButton.extended(
-                          onPressed: () {
-                            snapshot.data.docs.forEach((doc) {
-                              ProductDAO().setIsFavorite(doc['productId']);
-                            });
-                          },
-                          label: Text('vider'),
-                          icon: Icon(Icons.delete),
-                          backgroundColor: kPrimaryColor,
-                        )
-                      : EmptyCommande());
+               body: Body(),
+              // floatingActionButton:
+              //     snapshot.data != null && snapshot.data.docs.isNotEmpty
+              //         ? FloatingActionButton.extended(
+              //             onPressed: () {
+              //               snapshot.data.docs.forEach((doc) {
+              //                 ProductDAO().getCommandeProdStream();
+              //               });
+              //             },
+              //             label: Text('vider'),
+              //             icon: Icon(Icons.delete),
+              //             backgroundColor: kPrimaryColor,
+              //           )
+              //         : EmptyCommande()
+                      );
         });
   }
 }

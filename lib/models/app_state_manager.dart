@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/app_tab.dart';
 
-class AppStateManager extends ChangeNotifier {
+class  AppStateManager extends ChangeNotifier {
   bool _isSplashed = false;
   bool _isLogin = false;
   bool _logInSucess = false;
-  int _selectedTab = AppTab.home;
+  int  _selectedTab = AppTab.home;
   bool _displayProduct = false;
   bool _displayCommandes = false;
   bool _displayCart = false;
@@ -13,7 +13,7 @@ class AppStateManager extends ChangeNotifier {
   bool _onCreatingAccount = false;
 
   bool get isLogin => _isLogin;
-  int get selectTab => _selectedTab;
+  int  get selectTab => _selectedTab;
   bool get logInSucess => _logInSucess;
   bool get isSplashed => _isSplashed;
   bool get displayProduct => _displayProduct;
@@ -33,6 +33,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void loginSucess() {
+    print("je ss la aussi");
     _logInSucess = true;
     notifyListeners();
   }

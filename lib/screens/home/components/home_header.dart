@@ -23,7 +23,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   final Stream<QuerySnapshot> productCart = ProductDAO().getCountProductCart();
   final FirebaseAuth auth = FirebaseAuth.instance;
  String lastname = 'Inconnu' ;
- String genre = 'Homme' ;
+ String genre = 'Monsieur' ;
 
   @override
   void initState() {
@@ -64,7 +64,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   IconBtnWithCounterActive(
-                svgSrc: genre == 'Homme' ? "assets/icons/User.svg" : "assets/icons/Call.svg" ,
+                svgSrc: genre == 'Monsieur' ?  "assets/icons/man-user-svgrepo-com.svg" : "assets/icons/woman-user-svgrepo-com.svg" ,
                 // numOfitem:
                 //     snapshot.data == null ? 0 : snapshot.data.docs.length,
                 // numOfitem:

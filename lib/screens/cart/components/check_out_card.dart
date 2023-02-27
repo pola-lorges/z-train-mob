@@ -6,6 +6,7 @@ import 'package:shop_app/models/Cart.dart';
 import 'package:shop_app/models/product_dao.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
+import '../../../models/Livreur.dart';
 import '../../../size_config.dart';
 
 class CheckoutCard extends StatefulWidget {
@@ -19,6 +20,8 @@ class _CheckoutCardState extends State<CheckoutCard> {
   final Stream<QuerySnapshot> cartProducts = ProductDAO().getCartAmount();
   double amount = 0.0;
   List<Cart> carts = [];
+  final CollectionReference livreurCollection =
+      FirebaseFirestore.instance.collection('livreurs');
 
   @override
   initState() {
@@ -76,16 +79,39 @@ class _CheckoutCardState extends State<CheckoutCard> {
   }
 
   Future<void> checkout() async {
+    // await ProductDAO().addToCommande();
     /// retrieve data from the backend
     StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
-        .then((paymentMethod) {
+        .then((paymentMethod) async {
+          await ProductDAO().addToCommande();
       carts.forEach((element) {
         ProductDAO().deletedFromCard(element.id);
       });
       openDialog();
     }).catchError((error) => {print('$error')});
   }
+List<DropdownMenuItem<String>> list=[];
+  String def;
 
+  void menu(){
+    print("herererererer");
+    list.clear();
+       livreurCollection.get().then((QuerySnapshot querySnapshot) =>{
+           if (querySnapshot != null)
+              {
+                querySnapshot.docs?.forEach((doc) {
+                  Livreur livreur = Livreur(
+                    id: doc.id,
+                    nom: doc['nom']
+                  );
+                  list.add(livreur as DropdownMenuItem<String>);
+                  print("data $livreur");
+                })
+        }});
+      // print("data $list");
+    
+  }
+  
   @override
   Widget build(BuildContext context) {
     // ProductDAO productDAO = Provider.of<ProductDAO>(context, listen: true);
@@ -161,7 +187,34 @@ class _CheckoutCardState extends State<CheckoutCard> {
                                         content:
                                             Text('votre panier est vide')));
                               } else {
-                                checkout();
+                                  print("data ${
+                                    livreurCollection.doc()}"
+                                    );
+
+      //                           showDialog(context: context, 
+      //                           builder: (context)=>AlertDialog(
+      //                             title: Text('Choisissez votre livreur'),
+      //                             content: SingleChildScrollView(
+      //                               scrollDirection: Axis.horizontal,
+      //                               child: DropdownButton(
+      //                               elevation: 10,
+      //                               items: list,
+      //                               hint : Text("Livreur"), 
+      //                               //underline: SizedBox(),
+      //                               //iconSize: 0.0,
+      //                               onChanged: (value){
+                                      
+      //                               },
+      // ),
+      //                             ),
+      //                             actions: [
+      //                               ElevatedButton(onPressed: (){
+      //                                 Navigator.pop(context, 'Annuler');
+      //                               }, child: Text('Annuler'))
+      //                             ],
+      //                           ));
+                                   checkout(); 
+                                
                               }
                             }),
                       ),

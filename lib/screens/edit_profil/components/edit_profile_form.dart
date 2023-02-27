@@ -12,6 +12,7 @@ import 'package:select_form_field/select_form_field.dart';
 
 import '../../../constants.dart';
 import '../../../models/app_state_manager.dart';
+import '../../../models/app_tab.dart';
 import '../../../size_config.dart';
 
 class EditProfileForm extends StatefulWidget {
@@ -102,6 +103,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
   }
 
   Future<void> openDialog() async {
+ 
     switch (await showDialog(
       context: context,
       builder: (BuildContext context) => SimpleDialog(
@@ -121,14 +123,14 @@ class _EditProfileFormState extends State<EditProfileForm> {
                     margin: EdgeInsets.only(top: 10),
                     child: Text('Votre compte a été mofifié avec succès'),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 30),
+                  SizedBox(
+                   // margin: EdgeInsets.only(top: 30),
                     child: DefaultButton(
                       text: "Ok",
-                      press: () 
-                      {
-                        Provider.of<AppStateManager>(context, listen: false)
-                        .loginSucess();
+                      press: () {  
+                        print("ca a cliqué");
+                       Provider.of<AppStateManager>(context, listen: true)
+                          .loginSucess();
                       },
                       //=> Navigator.pop(context, true),
                     ),
@@ -192,9 +194,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
                   'genre': genreController.text
                 });
                 if (resp?.status == 200) {
-                  
+                 
                   openDialog();
-                  setLoading();
+                 // setLoading();
                 }
               }
               setLoading();
@@ -226,7 +228,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       },
       decoration: InputDecoration(
         labelText: "Adresse",
-        hintText: addressValue != null ? addressValue : "Entrez l'adresse",
+        hintText:  "Entrez l'adresse",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -257,7 +259,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       },
       decoration: InputDecoration(
         labelText: "Adresse de facturation",
-        hintText: addressValue != null ? addressValue : "Entrez l'adresse de facturation",
+        hintText:  "Entrez l'adresse de facturation",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -277,7 +279,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       }),
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: " le champ adresse est vide");
+          addError(error: "le champ adresse est vide");
           return "";
         } else if (!wordValidatorRegExp.hasMatch(value)) {
           addError(error: "Certaines valeurs ne sont pas valides");
@@ -288,7 +290,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       },
       decoration: InputDecoration(
         labelText: "Adresse de livraison",
-        hintText: addressValue != null ? addressValue : "Entrez l'adresse de livraison",
+        hintText:  "Entrez l'adresse de livraison",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -316,10 +318,11 @@ class _EditProfileFormState extends State<EditProfileForm> {
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Phone.svg"),
       ),
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: "Entrez un numéro de téléphone");
-          return "";
-        } else if (!numtelValidatorRegExp.hasMatch(value)) {
+        // if (value.isEmpty) {
+        //   addError(error: "Entrez un numéro de téléphone");
+        //   return "";
+        // } else 
+        if (!numtelValidatorRegExp.hasMatch(value)) {
           addError(error: "Certaines valeurs ne sont pas valides");
           return "";
         }
@@ -355,7 +358,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       },
       decoration: InputDecoration(
         labelText: "Prénom",
-        hintText: lastNameValue != null ? lastNameValue : "Entrez le prénom",
+        hintText:  "Entrez le prénom",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly 
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -390,7 +393,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       },
       decoration: InputDecoration(
         labelText: "Nom",
-        hintText: name != null ? name : "Entrez le nom",
+        hintText:  "Entrez le nom",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly 
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -415,12 +418,15 @@ class _EditProfileFormState extends State<EditProfileForm> {
       },
       validator: (value) {
         // if (value.isEmpty) {
-        //   addError(error: "le champ nom est vide");
+        //   //addError(error: "le champ nom est vide");
         //   return "";
-        // } else if (!wordValidatorRegExp.hasMatch(value)) {
-        //   addError(error: "Certaines valeurs ne sont pas valides");
-        //   return "";
-        // }
+        // } else 
+        if (value.isNotEmpty & !passwordRegex.hasMatch(value)) {
+          addError(error: kShortPassError);
+          return "";
+        }
+
+        if(value.isNotEmpty)
         newpwdController.text = value;
         return null;
       },
@@ -488,7 +494,7 @@ DropdownButtonFormField buildgenderFormField() {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         
        //suffixIcon:  CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
-      ), items: <String>['Homme', 'Femme'].map<DropdownMenuItem<String>>((String value) {
+      ), items: <String>['Monsieur', 'Madame'].map<DropdownMenuItem<String>>((String value) {
     return DropdownMenuItem<String>(
       value: value,
       child: Text(

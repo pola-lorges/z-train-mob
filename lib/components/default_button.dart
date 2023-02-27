@@ -5,7 +5,7 @@ import '../constants.dart';
 import '../size_config.dart';
 
 class DefaultButton extends StatelessWidget {
-  const DefaultButton({Key key, this.text, this.press, this.isLoading: false})
+  const DefaultButton({Key key, this.text, this.press, this.isLoading: false, void Function() onPressed, Set<void> Function() onpress})
       : super(key: key);
   final String text;
   final bool isLoading;

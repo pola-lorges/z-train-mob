@@ -25,7 +25,7 @@ class SearchField extends StatefulWidget {
 class _SearchFieldState extends State<SearchField> {
  final FirebaseAuth auth = FirebaseAuth.instance;
  String lastname = 'Inconnu' ;
- String genre = 'Homme' ;
+ String genre = 'Monsieur' ;
 
   @override
   void initState() {
